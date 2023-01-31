@@ -174,7 +174,7 @@ class MenuCard {
     render() {
         const element = document.createElement('div');
         if (this.classes.length === 0) {
-            this.element = 'menu__item'; //тут пустой массив и мы его перезаписываем, то есть сразу записываем в свойство, у нас будет де
+            this.element = 'menu__item'; //тут пустой массив и мы его перезаписываем, то есть сразу записываем в свойство, у нас будет дефолтный класс
             element.classList.add(this.element);
         } else {
             this.classes.forEach(className => element.classList.add(className));
