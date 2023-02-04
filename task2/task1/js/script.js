@@ -43,7 +43,7 @@ tabsParent.addEventListener('click', (event)=> {
 
 //Timer
 
-const deadline = '2022-12-31';
+const deadline = '2023-12-31';
 
 function getTimeRemaining (endtime) {
     const t = Date.parse(endtime) - Date.parse(new Date()), //or new Date()
@@ -225,3 +225,58 @@ new MenuCard(
     '.menu .container',
     'menu__item'
 ).render();
+
+//Forms
+
+const forms = document.querySelectorAll('form')
+
+const message = {
+    loading: 'Loading',
+    success: 'Thanks. We will contact you soon',
+    failure: 'Something wrong'
+}
+
+forms.forEach(item => {
+    postData(item);
+}) //берем нащи формы (form) и под каждую подвязываем функцию postData 
+
+function postData (form) { //
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const statusMessage = document.createElement('div');
+        statusMessage.textContent = message.loading;
+        form.append(statusMessage);
+
+        const request = new XMLHttpRequest();
+        request.open('POST', 'server.php');
+
+        //request.setRequestHeader('Content-type', 'multipart/form-data'); в обычном формате заголовки не нужны когда используем связку XMLHttpRequest и FormData - он установится автоматически
+        request.setRequestHeader('Content-type', 'application/json');
+        const formData = new FormData(form); //данные которые заполнил пользователь в form&input.value сможем получить в js и отправить на сервер в виде объекта, также есть ключ значение
+
+        const object = {};
+
+        formData.forEach(function(key, value) {
+            object[key] = value; // на основании данных которые есть в formData мы сформируем объект object при помощи перебора
+        });
+
+        const json = JSON.stringify(object); //далее обычный объект object превращаем в формат JSON
+        
+        request.send(json);
+        // request.send(formData);
+
+        request.addEventListener('load', () => {
+            if (request.status === 200) {
+                console.log(request.response);
+                statusMessage.textContent = message.success;
+                form.reset();
+                setTimeout( () => {
+                    statusMessage.remove();
+                }, 3000); 
+            } else {
+                statusMessage.textContent = message.failure;
+            }
+        })
+    })
+}
