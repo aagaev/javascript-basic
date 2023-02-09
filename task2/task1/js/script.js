@@ -104,10 +104,8 @@ setClock('.timer', deadline);
 
 
 const modalTrigger  = document.querySelectorAll('[data-modal]'),
-      modalCloseBtn  = document.querySelector('[data-close]'),
-      modal = document.querySelector('.modal');
-
-
+      //modalCloseBtn  = document.querySelector('[data-close]'); больше не нужно, так как на новых динамических элементах не будут работать обработчики события, повесим делегирование событий
+      modal = document.querySelector('.modal'); 
  function openModal () {
     modal.classList.add('show');
     modal.classList.remove('hide');
@@ -127,10 +125,10 @@ modalTrigger.forEach((btn) => {
     btn.addEventListener('click', openModal)
 });
 
-modalCloseBtn.addEventListener('click', closeModal);
+//modalCloseBtn.addEventListener('click', closeModal);  на создаваемых динамически новых элементах не будут работать обработчики события, повесим делегирование событий
 
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
+modal.addEventListener('click', (e) => { 
+    if (e.target === modal || e.target.getAttribute('data-close') == '') { // заменили обработчик modalCloseBtn на делегирование событий по атрибуту ('data-close') == '' в modal, будет работать и на новых эелементах        
         closeModal();
     }
 });
@@ -141,7 +139,7 @@ document.addEventListener('keydown', (e) => {
     }
 })
 
-const modalTimerId = setTimeout(openModal, 4000); 
+const modalTimerId = setTimeout(openModal, 50000); 
 
 function showModalByScroll () {
     if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
@@ -231,7 +229,7 @@ new MenuCard(
 const forms = document.querySelectorAll('form')
 
 const message = {
-    loading: 'Loading',
+    loading: 'img/form/spinner.svg',
     success: 'Thanks. We will contact you soon',
     failure: 'Something wrong'
 }
@@ -244,11 +242,17 @@ function postData (form) { //
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const statusMessage = document.createElement('div');
-        statusMessage.textContent = message.loading;
-        form.append(statusMessage);
-
-        const request = new XMLHttpRequest();
+        //const statusMessage = document.createElement('div');
+        //statusMessage.textContent = message.loading;
+        const statusMessage = document.createElement('img');
+        statusMessage.src = message.loading
+        statusMessage.style.cssText = `
+            display: block;
+            margin: 0 auto;
+        `
+        form.append(statusMessage); // вмещает элемент прямо внутри формы, неудобно если верстка на флексах
+        form.insertAdjacentElement('afterend', statusMessage); //более гибкий чем form.append, элемент будет добавляться после формы, удобно при флексах и не сплющивает(сжимает) форму
+        const request = new XMLHttpRequest();  
         request.open('POST', 'server.php');
 
         //request.setRequestHeader('Content-type', 'multipart/form-data'); в обычном формате заголовки не нужны когда используем связку XMLHttpRequest и FormData - он установится автоматически
@@ -269,14 +273,35 @@ function postData (form) { //
         request.addEventListener('load', () => {
             if (request.status === 200) {
                 console.log(request.response);
-                statusMessage.textContent = message.success;
+                showThanksModal(message.success);
                 form.reset();
-                setTimeout( () => {
-                    statusMessage.remove();
-                }, 3000); 
+                statusMessage.remove();
             } else {
-                statusMessage.textContent = message.failure;
+                showThanksModal(message.failure);;
             }
         })
     })
+}
+
+function showThanksModal(message) {
+    const prevModalDialog = document.querySelector('.modal__dialog');
+
+    prevModalDialog.classList.add('hide');
+    openModal();
+
+    const thanksModal = document.createElement('div');
+    thanksModal.classList.add('modal__dialog');
+    thanksModal.innerHTML = `
+        <div class="modal__content">
+            <div class="modal__close" data-close>×</div>
+            <div class="modal__title">${message}</div>
+        </div>
+    `;
+    document.querySelector('.modal').append(thanksModal);
+    setTimeout(() => {
+        thanksModal.remove();
+        prevModalDialog.classList.add('show');
+        prevModalDialog.classList.remove('hide');
+        closeModal();
+    }, 4000);
 }
