@@ -250,7 +250,7 @@ function postData (form) { //
             display: block;
             margin: 0 auto;
         `
-        form.append(statusMessage); // вмещает элемент прямо внутри формы, неудобно если верстка на флексах
+        //form.append(statusMessage);  вмещает элемент прямо внутри формы, неудобно если верстка на флексах
         form.insertAdjacentElement('afterend', statusMessage); //более гибкий чем form.append, элемент будет добавляться после формы, удобно при флексах и не сплющивает(сжимает) форму
         const request = new XMLHttpRequest();  
         request.open('POST', 'server.php');
