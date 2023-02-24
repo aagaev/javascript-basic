@@ -326,3 +326,8 @@ function showThanksModal(message) {
         closeModal();
     }, 4000);
 }
+
+fetch('http://localhost:3000/menu') //обращаемся к db.json same as (http://localhost:3000/menu) откуда будет возвращаться промис 
+    .then(data => data.json()) //Берем ответ от сервера (data) и превращаем в обычный 
+    .then(res => console.log(res)) // и далее берем тот результат и выводим в консоль
+
