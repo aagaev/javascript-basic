@@ -150,7 +150,7 @@ function showModalByScroll () {
 
 window.addEventListener('scroll', showModalByScroll);
 
-//Using Class for cards
+//Using Class for cardsb
 
 class MenuCard {
     constructor(src, alt, title, descr, price, parentSelector, ...classes) {
@@ -159,7 +159,7 @@ class MenuCard {
         this.title = title;
         this.descr = descr;
         this.price = price;
-        this.classes = classes;
+        this.classes = classes; // тут удет массив
         this.parent = document.querySelector(parentSelector)
         this.transfer = 27;
         this.changeToUAH();
@@ -193,36 +193,60 @@ class MenuCard {
     }
 }
 
+const getResource = async (url) => { // function expression Method GET - мы ничего не отправляем на сервер, только получаем, поэтому объекта {method, headers, body} с настройками  не будет!
+    const res = await fetch(url)
+
+    if (!res.ok) {// 2 свойства которые есть у промиса, который возвращается из fetch: .ok, status (200, 404, 500 and etc)
+       throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    }
+
+    return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
+           // res.json() это тоже промис, мы возвращаем из функции промис
+           // Мы делаем запрос, дожидаемся его окончания и трансформируем все эти данные в нормальный джаваскриптовый объект при помощи res.json()
+           // и дальше мы его сможем через цепочку .then() обработать как нам надо
+};
+
+getResource('http://localhost:3000/menu') //запрос уже ушел и нам нужно его обработать при помощи .then()
+    .then((data) =>{ //тут нам с сервера возвращается массив(внутри которого 3 объекта) который можно перебрать
+        data.forEach(({img, altimg, title, descr, price}) => { //для удобства каждый элемент массива (объекты) - мы подвергаем деструктуризации(это когда мы из объекта вытаскиваем отдельные свойства(ключ и значение) в качестве отдельной переменной)
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render()
+        })
+    })
+
+// getResource('http://localhost:3000/menu') // alternative version of Classes
+    //     .then(data => createCard(data));
+
+    // function createCard(data) {
+    //     data.forEach(({img, altimg, title, descr, price}) => {
+    //         const element = document.createElement('div');
+
+    //         element.classList.add("menu__item");
+
+    //         element.innerHTML = `
+    //             <img src=${img} alt=${altimg}>
+    //             <h3 class="menu__item-subtitle">${title}</h3>
+    //             <div class="menu__item-descr">${descr}</div>
+    //             <div class="menu__item-divider"></div>
+    //             <div class="menu__item-price">
+    //                 <div class="menu__item-cost">Цена:</div>
+    //                 <div class="menu__item-total"><span>${price}</span> грн/день</div>
+    //             </div>
+    //         `;
+    //         document.querySelector(".menu .container").append(element);
+    //     });
+    // }
+
 //const div = new MenuCard();
 //div.render();
-new MenuCard( 
-    "img/tabs/vegy.jpg",
-    'vegy',
-    'Меню "Фитнес"',
-    'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
-    9,
-    '.menu .container',
-).render();
+// new MenuCard(  
+//     "img/tabs/vegy.jpg",
+//     'vegy',
+//     'Меню "Фитнес"',
+//     'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+//     9,
+//     '.menu .container',
+// ).render();
 
-new MenuCard( 
-    "img/tabs/elite.jpg",
-    'elite',
-    'Меню “Премиум”',
-    'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-    23 ,
-    '.menu .container',
-    'menu__item'
-).render();
-
-new MenuCard( 
-    "img/tabs/post.jpg",
-    'post',
-    'Меню "Постное"',
-    'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-    14,
-    '.menu .container',
-    'menu__item'
-).render();
 
 //Forms
 
@@ -235,10 +259,23 @@ const message = {
 }
 
 forms.forEach(item => {
-    postData(item);
+    bindPostData(item);
 }) //берем нащи формы (form) и под каждую подвязываем функцию postData 
 
-function postData (form) { //
+const postData = async (url, data) => { // function expression - Method POST
+    const res = await fetch(url, { //res is a promise so we can use .json() and return it
+        method: 'POST',
+        headers: { 
+            'Content-type': 'application/json'
+        },
+        body: data
+    })
+    return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
+           // res.json() это тоже промис, мы возвращаем из функции промис
+           // и дальше мы его сможем через цепочку .then() обработать как нам надо
+}
+
+function bindPostData(form) { //
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -259,24 +296,31 @@ function postData (form) { //
         //request.setRequestHeader('Content-type', 'multipart/form-data'); в обычном формате заголовки не нужны когда используем связку XMLHttpRequest и FormData - он установится автоматически
         //request.setRequestHeader('Content-type', 'application/json'); в формате JSON заголовки нужны в таком виде, ныне используется FETCH, смотри выше
        
-        const formData = new FormData(form); //данные которые заполнил пользователь в form&input.value сможем получить в js и отправить на сервер в виде объекта, также есть ключ значение
+        // const formData = new FormData(form); //данные которые заполнил пользователь в form&input.value сможем получить в js и отправить на сервер в виде объекта, также есть ключ значение
 
-        const object = {}; //для того чтобы отправить JSON запрос, создаем пустой объект, в который мы затем при помощи перебора поместим данные которые есть в formData
+        // const object = {}; //для того чтобы отправить JSON запрос, создаем пустой объект, в который мы затем при помощи перебора поместим данные которые есть в formData
 
-        formData.forEach(function(key, value) {
-            object[key] = value; // на основании данных которые есть в formData мы сформируем объект object при помощи перебора
-        });
+        // formData.forEach(function(key, value) {
+        //     object[key] = value; // на основании данных которые есть в formData мы сформируем объект object при помощи перебора
+        // });
 
-        const json = JSON.stringify(object); //далее обычный объект object превращаем в формат JSON, то есть трансформация new FormData формата в JSON формат 
+        // const json = JSON.stringify(object); //далее обычный объект object превращаем в формат JSON, то есть трансформация new FormData формата в JSON формат 
         
-        fetch('server.php', {
-            method: 'POST',
-            headers: { //заголовки нужны когда отправляем JSON формате
-                'Content-type': 'application/json'
-            },
-            body: json //fetch возвращает нам Промис => data, который мы затем обрабатвает в then
-        })
-        .then(data => data.text()) //модифицируем данные чтобы мы могли их получить
+        // fetch('server.php', {
+        //     method: 'POST',
+        //     headers: { //заголовки нужны когда отправляем JSON формате
+        //         'Content-type': 'application/json'
+        //     },
+        //     body: json //fetch возвращает нам Промис => data, который мы затем обрабатываем в .then()
+        // })
+        
+
+        const formData = new FormData(form);
+        const json = JSON.stringify(Object.fromEntries(formData.entries())); // formData.entries() - берет formData и превращает в массив массивов для того чтоы могли нормально работать с ней.
+        //Затем Object.fromEntries(formData.entries()) превращает массив массивов в классический обьект, а затем этот классический обьект превращаем в JSON для отправки на сервер
+
+        postData(' http://localhost:3000/requests', json)
+        // .then(data => data.text()) //модифицируем данные чтобы мы могли их получить
         .then(data => { //data это те данные, которые нам возвращаются из Промиса, то есть которые нам вернул сервер
             console.log(data); // request.response === data ** уточнение - с сервера возвращается data но не JSON
             showThanksModal(message.success);
@@ -327,7 +371,7 @@ function showThanksModal(message) {
     }, 4000);
 }
 
-fetch('http://localhost:3000/menu') //обращаемся к db.json same as (http://localhost:3000/menu) откуда будет возвращаться промис 
-    .then(data => data.json()) //Берем ответ от сервера (data) и превращаем в обычный 
-    .then(res => console.log(res)) // и далее берем тот результат и выводим в консоль
+// fetch('http://localhost:3000/menu') //обращаемся к db.json same as (http://localhost:3000/menu) откуда будет возвращаться промис 
+//     .then(data => data.json()) //Берем ответ от сервера (data) и превращаем в обычный 
+//     .then(res => console.log(res)) // и далее берем тот результат и выводим в консоль
 
