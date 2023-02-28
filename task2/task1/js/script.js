@@ -213,7 +213,14 @@ getResource('http://localhost:3000/menu') //запрос уже ушел и на
         })
     })
 
-// getResource('http://localhost:3000/menu') // alternative version of Classes
+// axios.get('http://localhost:3000/menu') //Библиотека, которая выполняет тоже самое, что мы написали в функции const getResource, и заменяет ее действия, методы, свойства и тд, а такде вызов, 2 в 1.
+//         .then((data) =>{ 
+//             data.data.forEach(({img, altimg, title, descr, price}) => { 
+//                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render()
+//             })
+//         })
+
+// getResource('http://localhost:3000/menu') // alternative version of - not using Classes
     //     .then(data => createCard(data));
 
     // function createCard(data) {
