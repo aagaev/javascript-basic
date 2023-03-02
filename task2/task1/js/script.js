@@ -39,8 +39,6 @@ tabsParent.addEventListener('click', (event)=> {
         });
     }
 });
-
-
 //Timer
 
 const deadline = '2023-12-31';
@@ -286,13 +284,13 @@ function bindPostData(form) { //
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        //const statusMessage = document.createElement('div');
-        //statusMessage.textContent = message.loading;
-        const statusMessage = document.createElement('img');      
-        statusMessage.src = message.loading
-        statusMessage.style.cssText = `
-            display: block;
-            margin: 0 auto;
+        //const statusMessage = document.createElement('div'); 
+        //statusMessage.textContent = message.loading; 
+        const statusMessage = document.createElement('img');       
+        statusMessage.src = message.loading 
+        statusMessage.style.cssText = ` 
+            display: block; 
+            margin: 0 auto; 
         `
         //form.append(statusMessage);  вмещает элемент прямо внутри формы, неудобно если верстка на флексах
         form.insertAdjacentElement('afterend', statusMessage); //более гибкий чем form.append, элемент будет добавляться после формы, удобно при флексах и не сплющивает(сжимает) форму
@@ -382,3 +380,51 @@ function showThanksModal(message) {
 //     .then(data => data.json()) //Берем ответ от сервера (data) и превращаем в обычный 
 //     .then(res => console.log(res)) // и далее берем тот результат и выводим в консоль
 
+
+//Slider
+
+const slides = document.querySelectorAll('.offer__slide'),
+      next = document.querySelector('.offer__slider-next'),  
+      prev = document.querySelector('.offer__slider-prev'),
+      total = document.querySelector('#total'),
+      current = document.querySelector('#current');
+let index = 1;
+
+showSlides(index)
+
+if (slides.length < 10) {
+    total.textContent = `0${slides.length}`;
+} else { 
+    total.textContent = slides.length;
+}
+
+function showSlides(i) {
+    if (i > slides.length) { //slides.length - 1
+        index = 1; // 0
+    }
+    if (i < 1) {
+        index = slides.length;  //slides.length - 1
+    }
+    
+    slides.forEach(slide => slide.style.display = 'none')
+
+    slides[index-1].style.display = 'block'; // index
+
+    if (slides.length < 10) {
+        current.textContent = `0${index}`;
+    } else { 
+        current.textContent = index;
+    }
+};
+
+function plusSlider (i) {
+    showSlides(index += i); //сюда может приходит или +1 или -1, то есть мы или увеличиваем или уменьшаем индекс
+}
+
+next.addEventListener('click', () => {
+    plusSlider (1);
+})
+
+prev.addEventListener('click', () => {
+    plusSlider (-1);
+})
