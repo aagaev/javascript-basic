@@ -387,44 +387,109 @@ const slides = document.querySelectorAll('.offer__slide'),
       next = document.querySelector('.offer__slider-next'),  
       prev = document.querySelector('.offer__slider-prev'),
       total = document.querySelector('#total'),
-      current = document.querySelector('#current');
+      current = document.querySelector('#current'),
+      slidesWrapper = document.querySelector('.offer__slider-wrapper') //главная обертка для слайдов
+      slidesField = document.querySelector('.offer__slider-inner')//Обертка-поле с нашими слайдами
+      width = window.getComputedStyle(slidesWrapper).width; //window.getComputedStyle(slidesWrapper)тут будет object, a .width => значение *650px*
 let index = 1;
-
-showSlides(index)
+let offset = 0;//ориентир, чтоб мы четко понимали сколько мы отступили вправо/влево при помощи transform
 
 if (slides.length < 10) {
     total.textContent = `0${slides.length}`;
+    current.textContent = `0${index}`;
 } else { 
-    total.textContent = slides.length;
+    total.textContent = slides.length; 
+    current.textContent = index;
 }
 
-function showSlides(i) {
-    if (i > slides.length) { //slides.length - 1
-        index = 1; // 0
-    }
-    if (i < 1) {
-        index = slides.length;  //slides.length - 1
-    }
-    
-    slides.forEach(slide => slide.style.display = 'none')
+slidesField.style.width = 100 * slides.length + '%';//устанавливаем для обертки-поля ширину, который будет содержать все слайды (400% от родителя(slidesWrapper) )
+slidesField.style.display = 'flex';//слайды встанут в ряд
+slidesField.style.transition = '1.4s all';
 
-    slides[index-1].style.display = 'block'; // index
+slidesWrapper.style.overflow = 'hidden';//будем видеть только 1 слайд при смещении slidesField
 
+slides.forEach(item => item.style.width = width); //Перебираем слайды и устанавливаем всем одинаковую ширину(переменная width со значением *650px*), чтобы они поместились в поле-обертку slidesField 
+
+next.addEventListener('click', () => {
+    if (offset == (+width.slice(0, width.length - 2) * (slides.length - 1))) {  //в width храниться 650px, потому сначала работаем как со строкой отрезаем *px* через width.slice(0, width.length - 2), потом превращаем в числовой тип данных, в итоге будет 650*3=1950
+        offset = 0; //пограничный вариант самый крайний(правый), возвращаем в начало
+    } else {
+        offset += +width.slice(0, width.length - 2); //если не последний слайд, то мы добавляем смещение - к offset добавляется ширина еще одного слайда (650) и слайд будет смещаться на определенную величину
+    }
+
+    slidesField.style.transform = `translateX(-${offset}px)`; //смещаем поле-обертку, которая содержит все слайды, вправо/влево (если влево то отрицательное, если вправо то положительное значение)
+
+    if (index == slides.length) {
+        index = 1;
+    } else {
+        index +=1
+    }
     if (slides.length < 10) {
         current.textContent = `0${index}`;
     } else { 
         current.textContent = index;
     }
-};
-
-function plusSlider (i) {
-    showSlides(index += i); //сюда может приходит или +1 или -1, то есть мы или увеличиваем или уменьшаем индекс
-}
-
-next.addEventListener('click', () => {
-    plusSlider (1);
 })
 
 prev.addEventListener('click', () => {
-    plusSlider (-1);
+    if (offset == 0) {// пограничный вариант когда мы на 1 слайде и нажимаем назад - должны переместиться вконец
+        offset = (+width.slice(0, width.length - 2) * (slides.length - 1))//из переменной offset отнимаем каждый раз ширину слайда на которую мы смещаемся
+
+    } else {
+        offset -= +width.slice(0, width.length - 2); 
+    }
+
+    slidesField.style.transform = `translateX(-${offset}px)`;
+
+    
+    if (index == 1) {
+        index = slides.length;
+    } else {
+        index -=1
+    }
+    if (slides.length < 10) {
+        current.textContent = `0${index}`;
+    } else { 
+        current.textContent = index;
+    }
 })
+
+
+// showSlides(index)
+
+// if (slides.length < 10) {
+//     total.textContent = `0${slides.length}`;
+// } else { 
+//     total.textContent = slides.length;
+// }
+
+// function showSlides(i) {
+//     if (i > slides.length) { //slides.length - 1
+//         index = 1; // 0
+//     }
+//     if (i < 1) {
+//         index = slides.length;  //slides.length - 1
+//     }
+    
+//     slides.forEach(slide => slide.style.display = 'none')
+
+//     slides[index-1].style.display = 'block'; // index
+
+//     if (slides.length < 10) {
+//         current.textContent = `0${index}`;
+//     } else { 
+//         current.textContent = index;
+//     }
+// };
+
+// function plusSlider (i) {
+//     showSlides(index += i); //сюда может приходит или +1 или -1, то есть мы или увеличиваем или уменьшаем индекс
+// }
+
+// next.addEventListener('click', () => {
+//     plusSlider (1);
+// })
+
+// prev.addEventListener('click', () => {
+//     plusSlider (-1);
+// })

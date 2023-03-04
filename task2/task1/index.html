@@ -112,18 +112,20 @@
                         <img src="icons/right.svg" alt="next">
                     </div>
                 </div>
-                <div class="offer__slider-wrapper">  
-                    <div class="offer__slide">                                
-                        <img src="img/slider/pepper.jpg" alt="pepper">
-                    </div>
-                    <div class="offer__slide">
-                        <img src="img/slider/food-12.jpg" alt="food">
-                    </div>
-                    <div class="offer__slide">
-                        <img src="img/slider/olive-oil.jpg" alt="oil">
-                    </div>
-                    <div class="offer__slide">
-                        <img src="img/slider/paprika.jpg" alt="paprika">
+                <div class="offer__slider-wrapper"> <!--  чтоы видеть только текущий слайд надо сделать свойство overflow = 'hidden' -->
+                    <div class="offer__slider-inner"><!--  тут будут размещены все слайды(4),для этого сделаем его ширину - 400% от его родителя offer__slider-wrapper. Слайды мы будем передвигать по отношению к offer__slider-wrapper при помощи свойства transform = `translateX, который мы применим к __slider-inner -->
+                        <div class="offer__slide">                                
+                            <img src="img/slider/pepper.jpg" alt="pepper">
+                        </div>
+                        <div class="offer__slide">
+                            <img src="img/slider/food-12.jpg" alt="food">
+                        </div>
+                        <div class="offer__slide">
+                            <img src="img/slider/olive-oil.jpg" alt="oil">
+                        </div>
+                        <div class="offer__slide">
+                            <img src="img/slider/paprika.jpg" alt="paprika">
+                        </div>
                     </div>
                 </div>
             </div>
