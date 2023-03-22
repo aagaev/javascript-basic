@@ -1,6 +1,10 @@
-function forms () { //Forms
+//import {openModal, closeModal} from "./modal"; //analog below
+import {closeModal} from './modal';
+import {openModal} from './modal'; 
+import {postData} from '../services/services';
+function forms (formSelector, modalTimerId) { //Forms
 
-    const forms = document.querySelectorAll('form')
+    const forms = document.querySelectorAll(formSelector)
     
     const message = {
         loading: 'img/form/spinner.svg',
@@ -12,18 +16,6 @@ function forms () { //Forms
         bindPostData(item);
     }) //берем нащи формы (form) и под каждую подвязываем функцию postData 
     
-    const postData = async (url, data) => { // function expression - Method POST
-        const res = await fetch(url, { //res is a promise so we can use .json() and return it
-            method: 'POST',
-            headers: { 
-                'Content-type': 'application/json'
-            },
-            body: data
-        })
-        return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
-               // res.json() это тоже промис, мы возвращаем из функции промис
-               // и дальше мы его сможем через цепочку .then() обработать как нам надо
-    }
     
     function bindPostData(form) { //
         form.addEventListener('submit', (e) => {
@@ -69,7 +61,7 @@ function forms () { //Forms
             const json = JSON.stringify(Object.fromEntries(formData.entries())); // formData.entries() - берет formData и превращает в массив массивов для того чтоы могли нормально работать с ней.
             //Затем Object.fromEntries(formData.entries()) превращает массив массивов в классический обьект, а затем этот классический обьект превращаем в JSON для отправки на сервер
     
-            postData(' http://localhost:3000/requests', json)
+            postData(' http://localhost:3000/requests', json)//функцию импортировали из файла '../services/services'
             // .then(data => data.text()) //модифицируем данные чтобы мы могли их получить
             .then(data => { //data это те данные, которые нам возвращаются из Промиса, то есть которые нам вернул сервер
                 console.log(data); // request.response === data ** уточнение - с сервера возвращается data но не JSON
@@ -102,8 +94,8 @@ function forms () { //Forms
         const prevModalDialog = document.querySelector('.modal__dialog');
     
         prevModalDialog.classList.add('hide');
-        openModal();//нужен для нижней секции, чтоб появилось подложка
-    
+        openModal('.modal', modalTimerId);//нужен для нижней секции, чтоб появилось подложка
+        //передаем (параметр) селектор модалки которую будем закрывать(в начале модуля мы импортировали функции)
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
         thanksModal.innerHTML = `
@@ -117,7 +109,7 @@ function forms () { //Forms
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            closeModal();
+            closeModal('.modal');//передаем (параметр) селектор модалки которую будем закрывать(в начале модуля мы импортировали функции)
         }, 6000);
     }
     
@@ -126,4 +118,4 @@ function forms () { //Forms
     //     .then(res => console.log(res)) // и далее берем тот результат и выводим в консоль
 }
 
-module.exports = forms;
+export default forms;

@@ -1,14 +1,15 @@
-function slider () { //Slider
+function slider ({container, slide, nextArrow, prevArrow, totalCounter, currentCounter, wrapper, field}) {//деструктизирование объекта
+    //Slider 
 
-    const slider = document.querySelector('.offer__slider'),//получаем слайдер, так нужно установить ему position = 'relative'.
-          slides = document.querySelectorAll('.offer__slide'), 
-          next = document.querySelector('.offer__slider-next'),  
-          prev = document.querySelector('.offer__slider-prev'),
-          total = document.querySelector('#total'),
-          current = document.querySelector('#current'),
-          slidesWrapper = document.querySelector('.offer__slider-wrapper') //главная обертка для слайдов
-          slidesField = document.querySelector('.offer__slider-inner')//Обертка-поле с нашими слайдами
-          width = window.getComputedStyle(slidesWrapper).width; //window.getComputedStyle(slidesWrapper)тут будет object, a .width => значение *650px*
+    const slider = document.querySelector(container),//'.offer__slider' получаем слайдер, так нужно установить ему position = 'relative'.
+          slides = document.querySelectorAll(slide),//'.offer__slide' 
+          next = document.querySelector(nextArrow),//'.offer__slider-next'
+          prev = document.querySelector(prevArrow),//'.offer__slider-prev'
+          total = document.querySelector(totalCounter),//'#total'
+          current = document.querySelector(currentCounter),//'#current'
+          slidesWrapper = document.querySelector(wrapper), //'.offer__slider-wrapper' главная обертка для слайдов - чтоы видеть только текущий слайд надо сделать свойство overflow = 'hidden' -->
+          slidesField = document.querySelector(field),//'.offer__slider-inner' Обертка-поле с нашими слайдами - тут будут размещены все слайды(4),для этого сделаем его ширину - 400% от его родителя offer__slider-wrapper. Слайды мы будем передвигать по отношению к offer__slider-wrapper при помощи свойства transform = `translateX, который мы применим к __slider-inner
+          width = window.getComputedStyle(slidesWrapper).width; //slidesWrapper window.getComputedStyle(slidesWrapper)тут будет object, a .width => значение *650px*
     let index = 1;
     let offset = 0;//ориентир, чтоб мы четко понимали сколько мы отступили вправо/влево при помощи transform
     
@@ -191,4 +192,4 @@ function slider () { //Slider
     // })
 }
 
-module.exports = slider;
+export default slider;

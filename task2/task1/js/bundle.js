@@ -1,12 +1,17 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./js/modules/calc.js":
 /*!****************************!*\
   !*** ./js/modules/calc.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 function calc () { //Calculator
 
     const result = document.querySelector('.calculating__result span');//куда будет записываться результат
@@ -126,7 +131,7 @@ function calc () { //Calculator
     getDynamicInformation('#age')
 }
 
-module.exports = calc;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calc);
 
 /***/ }),
 
@@ -134,7 +139,14 @@ module.exports = calc;
 /*!*****************************!*\
   !*** ./js/modules/cards.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
+
 
 function cards() { 
     //Using Class for cards
@@ -180,20 +192,8 @@ function cards() {
         }
     }
     
-    const getResource = async (url) => { // function expression Method GET - мы ничего не отправляем на сервер, только получаем, поэтому объекта {method, headers, body} с настройками  не будет!
-        const res = await fetch(url)
-    
-        if (!res.ok) {// 2 свойства которые есть у промиса, который возвращается из fetch: .ok, status (200, 404, 500 and etc)
-           throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-    
-        return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
-               // res.json() это тоже промис, мы возвращаем из функции промис
-               // Мы делаем запрос, дожидаемся его окончания и трансформируем все эти данные в нормальный джаваскриптовый объект при помощи res.json()
-               // и дальше мы его сможем через цепочку .then() обработать как нам надо
-    };
-    
-    getResource('http://localhost:3000/menu') //запрос уже ушел и нам нужно его обработать при помощи .then()
+
+    (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResource)('http://localhost:3000/menu') //запрос уже ушел и нам нужно его обработать при помощи .then()
         .then((data) =>{ //тут нам с сервера возвращается массив(внутри которого 3 объекта) который можно перебрать
             data.forEach(({img, altimg, title, descr, price}) => { //для удобства каждый элемент массива (объекты) - мы подвергаем деструктуризации(это когда мы из объекта вытаскиваем отдельные свойства(ключ и значение) в качестве отдельной переменной)
                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render()
@@ -242,7 +242,7 @@ function cards() {
     // ).render();
 }
 
-module.exports = cards;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cards);
 
 /***/ }),
 
@@ -250,11 +250,21 @@ module.exports = cards;
 /*!*****************************!*\
   !*** ./js/modules/forms.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function forms () { //Forms
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
+//import {openModal, closeModal} from "./modal"; //analog below
 
-    const forms = document.querySelectorAll('form')
+ 
+
+function forms (formSelector, modalTimerId) { //Forms
+
+    const forms = document.querySelectorAll(formSelector)
     
     const message = {
         loading: 'img/form/spinner.svg',
@@ -266,18 +276,6 @@ function forms () { //Forms
         bindPostData(item);
     }) //берем нащи формы (form) и под каждую подвязываем функцию postData 
     
-    const postData = async (url, data) => { // function expression - Method POST
-        const res = await fetch(url, { //res is a promise so we can use .json() and return it
-            method: 'POST',
-            headers: { 
-                'Content-type': 'application/json'
-            },
-            body: data
-        })
-        return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
-               // res.json() это тоже промис, мы возвращаем из функции промис
-               // и дальше мы его сможем через цепочку .then() обработать как нам надо
-    }
     
     function bindPostData(form) { //
         form.addEventListener('submit', (e) => {
@@ -323,7 +321,7 @@ function forms () { //Forms
             const json = JSON.stringify(Object.fromEntries(formData.entries())); // formData.entries() - берет formData и превращает в массив массивов для того чтоы могли нормально работать с ней.
             //Затем Object.fromEntries(formData.entries()) превращает массив массивов в классический обьект, а затем этот классический обьект превращаем в JSON для отправки на сервер
     
-            postData(' http://localhost:3000/requests', json)
+            (0,_services_services__WEBPACK_IMPORTED_MODULE_1__.postData)(' http://localhost:3000/requests', json)//функцию импортировали из файла '../services/services'
             // .then(data => data.text()) //модифицируем данные чтобы мы могли их получить
             .then(data => { //data это те данные, которые нам возвращаются из Промиса, то есть которые нам вернул сервер
                 console.log(data); // request.response === data ** уточнение - с сервера возвращается data но не JSON
@@ -356,8 +354,8 @@ function forms () { //Forms
         const prevModalDialog = document.querySelector('.modal__dialog');
     
         prevModalDialog.classList.add('hide');
-        openModal();//нужен для нижней секции, чтоб появилось подложка
-    
+        (0,_modal__WEBPACK_IMPORTED_MODULE_0__.openModal)('.modal', modalTimerId);//нужен для нижней секции, чтоб появилось подложка
+        //передаем (параметр) селектор модалки которую будем закрывать(в начале модуля мы импортировали функции)
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
         thanksModal.innerHTML = `
@@ -371,7 +369,7 @@ function forms () { //Forms
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
-            closeModal();
+            (0,_modal__WEBPACK_IMPORTED_MODULE_0__.closeModal)('.modal');//передаем (параметр) селектор модалки которую будем закрывать(в начале модуля мы импортировали функции)
         }, 6000);
     }
     
@@ -380,7 +378,7 @@ function forms () { //Forms
     //     .then(res => console.log(res)) // и далее берем тот результат и выводим в консоль
 }
 
-module.exports = forms;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (forms);
 
 /***/ }),
 
@@ -388,61 +386,79 @@ module.exports = forms;
 /*!*****************************!*\
   !*** ./js/modules/modal.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function modal () { 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "closeModal": () => (/* binding */ closeModal),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   "openModal": () => (/* binding */ openModal)
+/* harmony export */ });
+function openModal (modalSelector, modalTimerId) {//Далее передаем этот селектор во всех случаях когда будем вызывать эту функцию
+    const modal = document.querySelector(modalSelector);
+
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+
+    console.log(modalTimerId)
+    if (modalTimerId) {//if parameter (actually)exists or given then clear
+         clearInterval(modalTimerId)//если пользователь сам откроет модалку, то мы очистим и больше не показываем его
+    }
+   
+    //window.removeEventListener('scroll', showModalByScroll);
+ };
+      
+function closeModal (modalSelector) {
+    const modal = document.querySelector(modalSelector);//аналогично как и с openModal передаем селектор везде где будем вызывать
+
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+   // modal.classList.remove('hide'); 
+    document.body.style.overflow = '';
+} //эти функции будут использованы в других модулях, а потому экспортируем
+
+function modal (triggerSelector, modalSelector, modalTimerId) { 
 
     //Modal window
     
-    const modalTrigger  = document.querySelectorAll('[data-modal]'),
+    const modalTrigger  = document.querySelectorAll(triggerSelector),
           //modalCloseBtn  = document.querySelector('[data-close]'); больше не нужно, так как на новых динамических элементах не будут работать обработчики события, повесим делегирование событий
-          modal = document.querySelector('.modal'); 
-     function openModal () {
-        modal.classList.add('show');
-        modal.classList.remove('hide');
-        document.body.style.overflow = 'hidden';
-        clearInterval(modalTimerId)
-        //window.removeEventListener('scroll', showModalByScroll);
-     };
-          
-     function closeModal () {
-        modal.classList.add('hide');
-        modal.classList.remove('show');
-       // modal.classList.remove('hide'); 
-        document.body.style.overflow = '';
-    }
+          modal = document.querySelector(modalSelector); 
+
          
     modalTrigger.forEach((btn) => {
-        btn.addEventListener('click', openModal)
+        btn.addEventListener('click', () => openModal(modalSelector, modalTimerId))
     });
     
     //modalCloseBtn.addEventListener('click', closeModal);  на создаваемых динамически новых элементах не будут работать обработчики события, повесим делегирование событий
     
     modal.addEventListener('click', (e) => { 
         if (e.target === modal || e.target.getAttribute('data-close') == '') { // заменили обработчик modalCloseBtn на делегирование событий по атрибуту ('data-close') == '' в modal, будет работать и на новых эелементах        
-            closeModal();
+            closeModal(modalSelector);
         }
-    });
+    });  
     
     document.addEventListener('keydown', (e) => {
         if(e.code === 'Escape' && modal.classList.contains('show')) {
-            closeModal();
+            closeModal(modalSelector);
         }
     })
     
-    const modalTimerId = setTimeout(openModal, 50000); 
     
     function showModalByScroll () {
         if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
-            openModal();
+            openModal(modalSelector, modalTimerId);
             window.removeEventListener('scroll', showModalByScroll);
-        }
+        } 
     }
     
     window.addEventListener('scroll', showModalByScroll);
 };
 
-module.exports = modal;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
+
+
 
 /***/ }),
 
@@ -450,19 +466,24 @@ module.exports = modal;
 /*!******************************!*\
   !*** ./js/modules/slider.js ***!
   \******************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function slider () { //Slider
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function slider ({container, slide, nextArrow, prevArrow, totalCounter, currentCounter, wrapper, field}) {//деструктизирование объекта
+    //Slider 
 
-    const slider = document.querySelector('.offer__slider'),//получаем слайдер, так нужно установить ему position = 'relative'.
-          slides = document.querySelectorAll('.offer__slide'), 
-          next = document.querySelector('.offer__slider-next'),  
-          prev = document.querySelector('.offer__slider-prev'),
-          total = document.querySelector('#total'),
-          current = document.querySelector('#current'),
-          slidesWrapper = document.querySelector('.offer__slider-wrapper') //главная обертка для слайдов
-          slidesField = document.querySelector('.offer__slider-inner')//Обертка-поле с нашими слайдами
-          width = window.getComputedStyle(slidesWrapper).width; //window.getComputedStyle(slidesWrapper)тут будет object, a .width => значение *650px*
+    const slider = document.querySelector(container),//'.offer__slider' получаем слайдер, так нужно установить ему position = 'relative'.
+          slides = document.querySelectorAll(slide),//'.offer__slide' 
+          next = document.querySelector(nextArrow),//'.offer__slider-next'
+          prev = document.querySelector(prevArrow),//'.offer__slider-prev'
+          total = document.querySelector(totalCounter),//'#total'
+          current = document.querySelector(currentCounter),//'#current'
+          slidesWrapper = document.querySelector(wrapper), //'.offer__slider-wrapper' главная обертка для слайдов - чтоы видеть только текущий слайд надо сделать свойство overflow = 'hidden' -->
+          slidesField = document.querySelector(field),//'.offer__slider-inner' Обертка-поле с нашими слайдами - тут будут размещены все слайды(4),для этого сделаем его ширину - 400% от его родителя offer__slider-wrapper. Слайды мы будем передвигать по отношению к offer__slider-wrapper при помощи свойства transform = `translateX, который мы применим к __slider-inner
+          width = window.getComputedStyle(slidesWrapper).width; //slidesWrapper window.getComputedStyle(slidesWrapper)тут будет object, a .width => значение *650px*
     let index = 1;
     let offset = 0;//ориентир, чтоб мы четко понимали сколько мы отступили вправо/влево при помощи transform
     
@@ -645,7 +666,7 @@ function slider () { //Slider
     // })
 }
 
-module.exports = slider;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
 
 /***/ }),
 
@@ -653,53 +674,52 @@ module.exports = slider;
 /*!****************************!*\
   !*** ./js/modules/tabs.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function tabs () { 
-	//Tabs
-	const tabs = document.querySelectorAll('.tabheader__item'),
-		  tabsContent = document.querySelectorAll('.tabcontent'),
-		  tabsParent = document.querySelector('.tabheader__items');
-	
-	function hideTabContent () {
-		tabsContent.forEach((item) => {
-			//item.style.display = 'none';
-			item.classList.remove('show', 'fade')
-			item.classList.add('hide')
-			
-		 })
-	
-		 tabs.forEach((item) => {   
-			item.classList.remove('tabheader__item_active');
-		 }); 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClass) {
+	let tabs = document.querySelectorAll(tabsSelector),
+		tabsContent = document.querySelectorAll(tabsContentSelector),
+		tabsParent = document.querySelector(tabsParentSelector);
+
+	function hideTabContent() {
+        
+        tabsContent.forEach(item => {
+            item.classList.add('hide');
+            item.classList.remove('show', 'fade');
+        });
+
+        tabs.forEach(item => {
+            item.classList.remove(activeClass);
+        });
 	}
-	
-	function showTabContent (i=0) {
-	   
-		//tabsContent[i].style.display = 'block';
-		tabsContent[i].classList.remove('hide')
-		tabsContent[i].classList.add('show', 'fade')
-		tabs[i].classList.add('tabheader__item_active');
-	}
-	
-	hideTabContent();
-	showTabContent ();
-	
-	
-	tabsParent.addEventListener('click', (event)=> {
-		//const target = event.target;
-		if (event.target && event.target.classList.contains('tabheader__item')) {
-			tabs.forEach((item, i) => {
-				if (item == event.target) {  
-					hideTabContent();
-					showTabContent (i); 
-				}
-			});
+
+	function showTabContent(i = 0) {
+        tabsContent[i].classList.add('show', 'fade');
+        tabsContent[i].classList.remove('hide');
+        tabs[i].classList.add(activeClass);
+    }
+    
+    hideTabContent();
+    showTabContent();
+
+	tabsParent.addEventListener('click', function(event) {
+        const target = event.target;
+		if(target && target.classList.contains(tabsSelector.slice(1))) {
+            tabs.forEach((item, i) => {
+                if (target == item) {
+                    hideTabContent();
+                    showTabContent(i);
+                }
+            });
 		}
-	});
+    });
 }
 
-module.exports = tabs;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs);
 
 /***/ }),
 
@@ -707,11 +727,15 @@ module.exports = tabs;
 /*!*****************************!*\
   !*** ./js/modules/timer.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function timer () { //Timer
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function timer (id, deadline) { //Timer
 
-    const deadline = '2023-12-31';
+    //const deadline = '2023-12-31';
     
     function getTimeRemaining (endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()), //or new Date()
@@ -766,10 +790,63 @@ function timer () { //Timer
     }
     
     
-    setClock('.timer', deadline);
+    setClock(id, deadline);// id = '.timer' - selector
 }
 
-module.exports = timer;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (timer);
+
+/***/ }),
+
+/***/ "./js/services/services.js":
+/*!*********************************!*\
+  !*** ./js/services/services.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getResource": () => (/* binding */ getResource),
+/* harmony export */   "postData": () => (/* binding */ postData)
+/* harmony export */ });
+const postData = async (url, data) => { // function expression - Method POST
+    const res = await fetch(url, { //res is a promise so we can use .json() and return it
+        method: 'POST',
+        headers: { 
+            'Content-type': 'application/json'
+        },
+        body: data
+    })
+    return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
+           // res.json() это тоже промис, мы возвращаем из функции промис
+           // и дальше мы его сможем через цепочку .then() обработать как нам надо
+};
+
+const getResource = async (url) => { // function expression Method GET - мы ничего не отправляем на сервер, только получаем, поэтому объекта {method, headers, body} с настройками  не будет!
+    const res = await fetch(url)
+
+    if (!res.ok) {// 2 свойства которые есть у промиса, который возвращается из fetch: .ok, status (200, 404, 500 and etc)
+       throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    }
+
+    return await res.json(); //промис из fetch обработаем методом json()  и вернем из функции postData  
+           // res.json() это тоже промис, мы возвращаем из функции промис
+           // Мы делаем запрос, дожидаемся его окончания и трансформируем все эти данные в нормальный джаваскриптовый объект при помощи res.json()
+           // и дальше мы его сможем через цепочку .then() обработать как нам надо
+};
+
+// async function getResource(url) {
+//     let res = await fetch(url);
+
+//     if (!res.ok) {
+//         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+//     }
+
+//     return await res.json();
+// }
+
+
+
+
 
 /***/ })
 
@@ -800,28 +877,79 @@ module.exports = timer;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 /*!**********************!*\
   !*** ./js/script.js ***!
   \**********************/
-const tabs = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js"),
-      modal = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js"),  
-      timer = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js"),
-      cards = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js"),
-      calc = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js"),
-      forms = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js"),
-      slider = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
+/* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+/* harmony import */ var _modules_cards__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js");
+/* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
 
-tabs();
-modal();
-timer();
-cards();
-calc();
-forms();
-slider();
 
+
+
+
+
+
+
+        
+window.addEventListener('DOMContentLoaded', function() {
+
+    const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__.openModal)('.modal', modalTimerId), 50000); 
+
+    (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__["default"])('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    (0,_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])('[data-modal]', '.modal', modalTimerId);
+    (0,_modules_timer__WEBPACK_IMPORTED_MODULE_2__["default"])('.timer', '2023-12-31');
+    (0,_modules_cards__WEBPACK_IMPORTED_MODULE_3__["default"])();
+    (0,_modules_calc__WEBPACK_IMPORTED_MODULE_4__["default"])();
+    (0,_modules_forms__WEBPACK_IMPORTED_MODULE_5__["default"])('form', modalTimerId);
+    (0,_modules_slider__WEBPACK_IMPORTED_MODULE_6__["default"])({
+        container: '.offer__slider',
+        slide: '.offer__slide',
+        nextArrow: '.offer__slider-next',
+        prevArrow: '.offer__slider-prev',
+        totalCounter: '#total',
+        currentCounter: '#current',
+        wrapper: '.offer__slider-wrapper',
+        field: '.offer__slider-inner' 
+    });//передаем сюда объект с настройками(аргументами), которые затем будут деструктизироваться в файле slider.js 
+}); 
 })();
 
 /******/ })()
